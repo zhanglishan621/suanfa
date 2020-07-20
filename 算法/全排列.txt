@@ -1,0 +1,87 @@
+
+7, 用回溯法生成(1.2,3.4}的所有排列。
+
+算法思想：
+
+回溯法就是先确定某一部step的选择，选择之后要置状态为1，以表示某个资源已被使用；
+然后把“选择”和当前状态传到到step+1，直到第N+1步，才结束。
+然后回溯回去的时候，要重新置状态为0，这一点是回溯法的重要标志！
+
+代码：
+
+#include <stdio.h>
+
+ 
+#define N 3
+
+ 
+void print_elems(int* a)
+{
+
+	int i;
+
+	for (i = 1; i <= N;++i
+
+	{
+
+		printf("%d ", a[i]);
+
+	
+}
+
+}
+
+ 
+void dfs(int step, int* a, int* book)
+
+{
+
+	if (step==N+1)
+
+	{
+
+		print_elems(a);
+
+		printf("\n");
+
+		return;
+
+	}
+
+ 
+	for (int i = 1; i <= N;++i)
+
+	{
+
+		if (*(book + i) == 0)
+
+		{
+
+			*(book + i) = 1;
+
+			a[step] = i;
+
+			dfs(step + 1, a, book);
+
+			*(book + i) = 0;
+
+		}
+
+	}
+
+}
+
+ 
+int main(void)
+
+{
+
+	int a[N+1] = { 0 };
+
+	int book[N+1] = { 0 };
+
+ 
+	dfs(1, a, book);
+
+ 
+	return 0;

@@ -1,0 +1,81 @@
+
+7,
+a.对于一个包含100万随机数的数组排序，快速排序比插入排序快多少倍?
+b.是非题:对于n>1的n元素数组，是否存在插入排序比快速排序更快的情形?
+
+忽略常数、误差的平均情况中，快速排序执行约10^7次，插入排序执行约10^12次，大约十万倍吧
+
+
+插入排序：
+
+算法描述如下：
+1.从第一个元素开始，该元素可以认为已经被排序
+2.取出下一个元素，在已经排序的元素序列中从后向前扫描
+3.如果该元素（已排序）大于新元素，将该元素移到下一位置
+4.重复步骤3，直到找到已排序的元素小于或者等于新元素的位置
+5将新元素插入到该位置后
+重复步骤2~5
+
+代码示例：
+void insertion_sort(int arr[], int len)
+{
+    int i,j,temp;
+    for (i=1;i<len;i++)
+    {
+        temp = arr[i];
+        for (j=i;j>0 && arr[j-1]>temp;j--)
+        arr[j] = arr[j-1];
+        arr[j] = temp;
+    }
+}
+
+
+快速排序：
+
+1.先从队尾开始向前扫描且当low < high时,如果a[high] > tmp,则high–,但如果a[high] < tmp,则将high的值赋值给low,即arr[low] = a[high],同时要转换数组扫描的方式,即需要从队首开始向队尾进行扫描了
+
+2.同理,当从队首开始向队尾进行扫描时,如果a[low] < tmp,则low++,但如果a[low] > tmp了,则就需要将low位置的值赋值给high位置,即arr[low] = arr[high],同时将数组扫描方式换为由队尾向队首进行扫描.
+??
+3.不断重复1和2,知道low>=high时(其实是low=high),low或high的位置就是该基准数据在数组中的正确索引位置.
+
+#include <stdio.h>
+int a[101],n;//定义全局变量，这两个变量需要在子函数中使用
+void quicksort(int left, int right) {
+	int i, j, t, temp;
+	if(left > right)
+		return;
+    temp = a[left]; //temp中存的就是基准数
+    i = left;
+    j = right;
+    while(i != j) { //顺序很重要，要先从右边开始找
+    	while(a[j] >= temp && i < j)
+    		j--;
+    	while(a[i] <= temp && i < j)//再找右边的
+    		i++;       
+    	if(i < j)//交换两个数在数组中的位置
+    	{
+    		t = a[i];
+    		a[i] = a[j];
+    		a[j] = t;
+    	}
+    }
+    //最终将基准数归位
+    a[left] = a[i];
+    a[i] = temp;
+    quicksort(left, i-1);//继续处理左边的，这里是一个递归的过程
+    quicksort(i+1, right);//继续处理右边的 ，这里是一个递归的过程
+}
+int main() {
+	int i;
+    //读入数据
+	scanf("%d", &n);
+	for(i = 1; i <= n; i++)
+		scanf("%d", &a[i]);
+    quicksort(1, n); //快速排序调用
+    //输出排序后的结果
+    for(i = 1; i < n; i++)
+    	printf("%d ", a[i]);
+    printf("%d\n", a[n]);
+    return 0;
+}
+

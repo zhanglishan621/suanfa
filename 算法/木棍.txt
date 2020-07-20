@@ -1,0 +1,35 @@
+6.切割木棍问题
+为下列问题设计一个动态规划算法。已知小木棍的销售价格Pi和长度i相关，i=1,2, n，如何把长度为n的木棍切割为若干根长度为整数的小木棍，使得所能获得的总销售价格最大?该算法的时间效率和空间效率各是多少?
+
+1、长度为0的木棍收益肯定是0了，即profit[0] = 0
+2、对于长度为n的木棍，他的递推关系是：profit[n] = max(pi[i] + profit[length - seg[i]]), 其中i = 1,2,3,...n;
+3、先求解长度为1的最大收益，再到2,3.....一直到n，而每次求解的解都储存起来，时间复杂度为O(nm)，空间复杂度为O(n)。
+
+代码：
+
+#include<stdio.h>
+#include<stdlib.h>
+int _Cut_Dynamic_DownToTop(int seg[], int pi[], int arr_len, int length, int dump[])
+{
+    int tmp;
+    dump[0] = 0;
+    for (int i = 1; i <= length; ++i)
+    {
+        tmp = -1;   
+        for (int j = 0; j < arr_len; ++j)
+        {
+            if (i - seg[j] >= 0)
+                tmp = max(tmp, pi[j] + dump[i - seg[j]]);               
+        }
+        dump[i] = tmp;
+    }
+    return dump[length];
+}
+ 
+int Cut_Dynamic_DownToTop(int seg[], int pi[], int arr_len, int length)
+{
+    int *dump = (int *)malloc(sizeof(int)*length + 1);
+    int tmp = _Cut_Dynamic_DownToTop(seg, pi, arr_len, length, dump);
+    free(dump);
+    return tmp;
+}
